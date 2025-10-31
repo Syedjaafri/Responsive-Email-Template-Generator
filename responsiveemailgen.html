@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Responsive Email Template Generator</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;--glass:rgba(255,255,255,0.03)}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,'Helvetica Neue',Arial; background:linear-gradient(180deg,#071021 0%, #071827 100%);color:#e6eef6}
+    .wrap{max-width:1200px;margin:28px auto;padding:24px;display:grid;grid-template-columns:1fr 600px;gap:24px}
+    .card{background:linear-gradient(180deg,var(--card),#071226);border-radius:14px;padding:18px;box-shadow:0 6px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    h1{font-size:20px;margin:0 0 8px}
+    .muted{color:var(--muted);font-size:13px}
+    form .row{display:flex;gap:10px;margin:10px 0}
+    input[type=text], input[type=url], textarea, select{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:inherit}
+    textarea{min-height:120px;resize:vertical}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{background:var(--accent);color:#042; border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .preview-pane{height:90vh;overflow:auto;padding:0}
+    .preview-iframe{width:100%;height:100%;border:0;background:white;border-radius:10px}
+    .actions{display:flex;gap:8px;align-items:center}
+    .small{font-size:12px}
+    footer{grid-column:1/-1;margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
+    .title-section{text-align:center;margin-bottom:20px}
+    .creator{color:var(--muted);font-size:14px;margin-top:-5px;margin-bottom:20px;text-align:center}
+    @media(max-width:980px){.wrap{grid-template-columns:1fr; padding:12px}.preview-pane{height:75vh}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" style="min-height:420px;">
+      <div class="title-section">
+        <h1 style="font-size:24px;margin-bottom:5px;">Responsive Email Template Generator</h1>
+        <div class="creator">Created by <strong>Syed Ahamed Jaafri</strong></div>
+      </div>
+
+      <div class="muted">Fill the fields, click <strong>Generate</strong>. Preview on the right. Copy or download the final HTML.</div>
+
+      <form id="genForm" onsubmit="return false;">
+        <div style="margin-top:12px">
+          <label>Brand / Logo URL</label>
+          <input id="logo" type="url" placeholder="https://.../logo.png">
+        </div>
+
+        <div class="row">
+          <div style="flex:1">
+            <label>Hero / Subject</label>
+            <input id="subject" type="text" placeholder="Big Diwali Sale — Up to 50% off">
+          </div>
+          <div style="width:140px">
+            <label>Preheader (short)</label>
+            <input id="preheader" type="text" placeholder="Limited time offer">
+          </div>
+        </div>
+
+        <div>
+          <label>Main heading</label>
+          <input id="heading" type="text" placeholder="Don't miss our biggest sale of the year">
+        </div>
+
+        <div>
+          <label>Body text</label>
+          <textarea id="bodyText">Hurry! Get exclusive discounts on selected products. Shop now to grab the best deals before stocks run out.</textarea>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Button text</label>
+            <input id="btnText" type="text" placeholder="Shop Now">
+          </div>
+          <div>
+            <label>Button URL</label>
+            <input id="btnUrl" type="url" placeholder="https://yourstore.example/">
+          </div>
+        </div>
+
+        <div>
+          <label>Footer text</label>
+          <input id="footer" type="text" placeholder="© 2025 YourBrand. Unsubscribe link included." value="© 2025 YourBrand. If you wish to unsubscribe, click here.">
+        </div>
+
+        <div class="controls">
+          <button id="generate">Generate</button>
+          <button id="copyBtn" class="btn-ghost" type="button">Copy HTML</button>
+          <button id="downloadBtn" class="btn-ghost" type="button">Download .html</button>
+          <button id="openBtn" class="btn-ghost" type="button">Open in New Tab</button>
+          <div style="margin-left:auto" class="small muted">Tip: test by sending to Gmail and Outlook.</div>
+        </div>
+      </form>
+
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.04);margin:14px 0">
+
+      <div class="muted small">Generator notes: The email produced uses table-based layout and inline styles to maximise compatibility with email clients. You can edit the generated code before sending.</div>
+    </div>
+
+    <div class="card preview-pane">
+      <h1 style="font-size:16px;margin-bottom:10px;text-align:center">Preview</h1>
+      <iframe id="preview" class="preview-iframe" sandbox="allow-same-origin allow-popups allow-forms"></iframe>
+    </div>
+
+    <footer class="muted">Built for campus placement demo • Created by <strong>Syed Ahamed Jaafri</strong></footer>
+  </div>
+
+  <script>
+    function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+    function buildEmailHTML({logo,subject,preheader,heading,bodyText,btnText,btnUrl,footer}){
+      const btnStyle = "display:inline-block;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:600;background:#06b6d4;color:#042;";
+      return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>${esc(subject)}</title><style>@media only screen and (max-width:600px){.wrapper{width:100%!important}.stack{display:block!important;width:100%!important}.hide-mobile{display:none!important}}</style></head><body style=\"margin:0;padding:0;background:#f3f6f9;\"><div style=\"display:none;max-height:0;overflow:hidden;mso-hide:all;visibility:hidden;\">${esc(preheader)}</div><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background:#f3f6f9;padding:20px 0;\"><tr><td align=\"center\"><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" class=\"wrapper\" style=\"background:#ffffff;border-radius:8px;overflow:hidden;\"><tr><td style=\"padding:18px 20px;text-align:left;background:#05233a;color:#fff;\">${logo?`<img src=\"${logo}\" width=\"120\" alt=\"logo\">`:`<div style=\"font-weight:700;font-size:18px;color:#e6eef6;\">Your Brand</div>`}</td></tr><tr><td style=\"padding:28px 24px 12px;font-family:Arial,Helvetica,sans-serif;\"><h1 style=\"margin:0 0 12px;font-size:22px;color:#071227;\">${esc(heading)}</h1><p style=\"margin:0 0 18px;color:#334155;line-height:1.45;font-size:15px;\">${esc(bodyText)}</p><a href=\"${btnUrl||'#'}\" style=\"${btnStyle}\">${esc(btnText||'Learn more')}</a></td></tr><tr><td style=\"padding:16px 20px;background:#f8fafc;color:#64748b;font-size:13px;\">${esc(footer)}<div style=\"margin-top:8px;font-size:12px;color:#94a3b8;\">If you no longer wish to receive these emails, you may <a href=\"#\" style=\"color:#06b6d4;text-decoration:none;\">unsubscribe</a>.</div></td></tr></table></td></tr></table></body></html>`;
+    }
+    const form=document.getElementById('genForm'),preview=document.getElementById('preview'),generateBtn=document.getElementById('generate'),copyBtn=document.getElementById('copyBtn'),downloadBtn=document.getElementById('downloadBtn'),openBtn=document.getElementById('openBtn');
+    function readFields(){return{logo:logo.value.trim(),subject:subject.value.trim(),preheader:preheader.value.trim(),heading:heading.value.trim(),bodyText:bodyText.value.trim(),btnText:btnText.value.trim(),btnUrl:btnUrl.value.trim(),footer:footer.value.trim()}};
+    function updatePreview(){const d=readFields(),h=buildEmailHTML(d),b=new Blob([h],{type:'text/html'}),u=URL.createObjectURL(b);preview.src=u;preview.latestHtml=h;}
+    generateBtn.addEventListener('click',e=>{e.preventDefault();updatePreview();generateBtn.textContent='Generated ✓';setTimeout(()=>generateBtn.textContent='Generate',1200)});
+    copyBtn.addEventListener('click',()=>{const h=preview.latestHtml||buildEmailHTML(readFields());navigator.clipboard.writeText(h).then(()=>{copyBtn.textContent='Copied ✓';setTimeout(()=>copyBtn.textContent='Copy HTML',1200)}).catch(()=>alert('Copy failed — open generated HTML and copy manually.'))});
+    downloadBtn.addEventListener('click',()=>{const h=preview.latestHtml||buildEmailHTML(readFields()),b=new Blob([h],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='email_template.html';document.body.appendChild(a);a.click();a.remove()});
+    openBtn.addEventListener('click',()=>{const h=preview.latestHtml||buildEmailHTML(readFields()),b=new Blob([h],{type:'text/html'}),u=URL.createObjectURL(b);window.open(u,'_blank')});
+    document.addEventListener('DOMContentLoaded',()=>updatePreview());
+  </script>
+</body>
+</html>
